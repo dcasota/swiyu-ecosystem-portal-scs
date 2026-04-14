@@ -1,0 +1,47 @@
+<div class="ob-flex">
+  <div class="flex-justify-end">
+    <button (click)="cancel()" mat-icon-button obButton="tertiary" type="button">
+      <mat-icon class="close" svgIcon="xmark_circle" />
+    </button>
+  </div>
+  <div class="modal-content">
+    <h2>{{ "app.site.updateOrganization.title" | translate }}</h2>
+    <p [innerHTML]="'app.site.updateOrganization.body' | translate"></p>
+    <form data-cy="formEditOrganization" class="form-container" [formGroup]="form">
+      <div class="form-fields-container">
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app.site.register.form.entityName" | translate }}</mat-label>
+          <input
+            type="text"
+            data-cy="orgName"
+            [maxlength]="maxLengthOrgName"
+            [formControl]="form.controls.orgName"
+            matInput
+          />
+          <mat-hint align="end">{{ lengthHint$ | async }}</mat-hint>
+          <mat-error />
+        </mat-form-field>
+        <mat-form-field floatLabel="always" obErrorMessages>
+          <mat-label>{{ "app.site.register.form.contactEmail" | translate }}</mat-label>
+          <input [formControl]="form.controls.technicalEmail" data-cy="technicalEmail" type="email" matInput />
+          <mat-error />
+        </mat-form-field>
+      </div>
+      <div class="form-actions">
+        <button data-cy="btnCreateOrganization" (click)="cancel()" mat-button obButton="secondary" type="button">
+          {{ "app.site.register.btn.cancel" | translate }}
+        </button>
+        <button
+          data-cy="btnEditOrganization"
+          (click)="save()"
+          [disabled]="!form.valid"
+          mat-button
+          obButton="primary"
+          type="button"
+        >
+          {{ "app.ctl.btn.save" | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

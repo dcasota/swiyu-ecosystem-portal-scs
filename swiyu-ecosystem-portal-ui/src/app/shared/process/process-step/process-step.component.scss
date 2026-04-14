@@ -1,0 +1,7 @@
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // vertical centering
+  align-self: stretch; // ⬅ fills header height
+  flex: 1;
+}

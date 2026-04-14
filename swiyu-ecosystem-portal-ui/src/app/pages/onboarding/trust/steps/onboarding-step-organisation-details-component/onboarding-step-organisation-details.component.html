@@ -1,0 +1,276 @@
+<form id="organisation-details-form" [formGroup]="form" obUnsavedChanges>
+  <div class="sw-form-container">
+    <div class="sw-form-sub-container">
+      <h1>{{ "app.site.onboarding.trust.organisation-information.title" | translate }}</h1>
+      <p>
+        {{ "eportal_onboardingTR_addDetails_introText_TE" | translate }}
+      </p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p [innerHTML]="'eportal_onboardingTR_addDetails_introText_TE_warning_autoApproval' | translate"></p>
+      }
+    </div>
+    @if (partner()?.type !== PartnerTypeSelection.GovernmentalInstitution) {
+      <div class="sw-form-sub-container">
+        <h3>{{ "app.site.onboarding.trust.organisation-information.profile-type" | translate }}</h3>
+        <div
+          class="sw-radio-card-container"
+          obSelectableGroup
+          data-cy="partnerTypeRadioGroup"
+          [formGroupName]="'partnerType'"
+        >
+          <app-radio-card
+            [dataCy]="'businessPartnerType'"
+            [value]="PartnerTypeSelection.Business"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Business)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.Business"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+          >
+            <mat-icon cardIcon svgIcon="building" />
+            <h6>{{ "eportal_onboarding_profile_card_business" | translate }}</h6>
+          </app-radio-card>
+          <app-radio-card
+            [dataCy]="'governmentPartnerType'"
+            [value]="PartnerTypeSelection.GovernmentalInstitution"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.GovernmentalInstitution)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.GovernmentalInstitution"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+          >
+            <mat-icon cardIcon svgIcon="antique-building" />
+            <h6>{{ "eportal_onboarding_profile_card_government" | translate }}</h6>
+          </app-radio-card>
+
+          <app-radio-card
+            [dataCy]="'individualPartnerType'"
+            [value]="PartnerTypeSelection.Individual"
+            (cardSelect)="form.controls.partnerType.setValue(PartnerTypeSelection.Individual)"
+            [checked]="form.controls.partnerType.value === PartnerTypeSelection.Individual"
+            [hasError]="form.controls.partnerType.hasError('required') && form.controls.partnerType.touched"
+          >
+            <mat-icon cardIcon svgIcon="person" />
+            <h6>{{ "eportal_onboarding_profile_card_individual" | translate }}</h6>
+          </app-radio-card>
+        </div>
+      </div>
+    }
+    <div class="sw-form-sub-container">
+      <h3>{{ "app.site.onboarding.trust.organisation-information.organisation-details" | translate }}</h3>
+
+      <div>
+        @if (partner()?.type !== PartnerTypeSelection.GovernmentalInstitution) {
+          <mat-radio-group [formControl]="form.controls.hasUid" data-cy="isCommercialGroup">
+            <mat-radio-button [value]="true" data-cy="isCommercialRadioBtn"
+              >{{
+                "app.site.onboarding.trust.organisation-information.commercial-register-entry-available" | translate
+              }}
+            </mat-radio-button>
+            <mat-radio-button [value]="false" data-cy="isNotCommercialRadioBtn"
+              >{{
+                "app.site.onboarding.trust.organisation-information.no-commercial-register-entry-available" | translate
+              }}
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="ob-flex">
+            <mat-form-field>
+              <mat-label>{{ "app.site.onboarding.trust.organisation-information.swiss-uid" | translate }}</mat-label>
+              <input
+                [formControl]="form.controls.registryIds.controls.UID"
+                type="text"
+                matInput
+                [placeholder]="'app.site.onboarding.trust.organisation-information.swiss-uid' | translate"
+                [required]="form.controls.hasUid.value === true"
+                data-cy="companyUid"
+              />
+            </mat-form-field>
+            <div>
+              <mat-icon svgIcon="exclamation_circle" />
+            </div>
+          </div>
+        }
+        <div [formGroup]="form.controls.entityName">
+          <div class="ob-flex ob-gap-3">
+            <mat-form-field class="ob-w-3/5">
+              <mat-label
+                >{{ "app.site.onboarding.trust.organisation-information.organisation-name" | translate }}
+              </mat-label>
+              <input
+                matInput
+                [formControl]="form.controls.entityName.controls.de"
+                [placeholder]="'app.site.onboarding.trust.organisation-information.organisation-name' | translate"
+                data-cy="organizationName"
+              />
+            </mat-form-field>
+            <div class="sw-flex-row">
+              <mat-form-field class="ob-w-1/5">
+                <mat-label>{{ "app.site.onboarding.trust.organisation-information.language" | translate }}</mat-label>
+                <mat-select [value]="'DE'" data-cy="languageSelect">
+                  @for (lang of languages; track lang) {
+                    <mat-option [value]="lang">
+                      {{ lang | uppercase }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-icon svgIcon="exclamation_circle" />
+            </div>
+          </div>
+          @if (form.controls.entityName.hasError("atLeastOneRequired") && form.controls.entityName.touched) {
+            <mat-error>
+              {{
+                "app.site.onboarding.trust.organisation-information.at-least-one-organisation-name-required" | translate
+              }}
+            </mat-error>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Entity Address -->
+    <div class="sw-form-sub-container">
+      <div [formGroup]="form.controls.entityAddress">
+        <mat-form-field>
+          <mat-label
+            >{{ "app.site.onboarding.trust.organisation-information.street-and-house-number" | translate }}
+          </mat-label>
+          <input
+            matInput
+            [formControl]="form.controls.entityAddress.controls.street"
+            [placeholder]="'app.site.onboarding.trust.organisation-information.street-and-house-number' | translate"
+            data-cy="street"
+          />
+        </mat-form-field>
+        <div class="ob-flex ob-gap-3">
+          <mat-form-field class="ob-w-2/5">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.postal-code" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.entityAddress.controls.postalCode"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.postal-code' | translate"
+              data-cy="zipCode"
+            />
+          </mat-form-field>
+          <mat-form-field class="ob-w-2/5">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.city" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.entityAddress.controls.city"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.city' | translate"
+              data-cy="city"
+            />
+          </mat-form-field>
+        </div>
+        <mat-form-field>
+          <mat-label>{{ "app.site.onboarding.trust.organisation-information.country" | translate }}</mat-label>
+          <mat-select [formControl]="form.controls.entityAddress.controls.country" data-cy="countrySelect">
+            @for (country of countryService.countries; track country) {
+              <mat-option [value]="country">
+                {{ countryService.getCountryTranslationKey(country) | translate }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="sw-form-sub-container">
+      <div [formGroup]="form.controls.contactPerson">
+        <h3>{{ "app.site.onboarding.trust.organisation-information.contact-person" | translate }}</h3>
+        <div class="sw-flex-row">
+          <mat-form-field class="ob-span-6">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.first-name" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contactPerson.controls.firstName"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.first-name' | translate"
+              data-cy="contactFirstName"
+            />
+          </mat-form-field>
+          <mat-form-field class="ob-span-6">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.last-name" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contactPerson.controls.lastName"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.last-name' | translate"
+              data-cy="contactLastName"
+            />
+          </mat-form-field>
+        </div>
+        <div class="sw-flex-row">
+          <mat-form-field class="ob-span-6">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.phone" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contactPerson.controls.phone"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.phone' | translate"
+              data-cy="contactPhone"
+            />
+          </mat-form-field>
+          <mat-form-field class="ob-span-6">
+            <mat-label>{{ "app.site.onboarding.trust.organisation-information.email" | translate }}</mat-label>
+            <input
+              matInput
+              [formControl]="form.controls.contactPerson.controls.email"
+              [placeholder]="'app.site.onboarding.trust.organisation-information.email' | translate"
+              data-cy="contactEmail"
+            />
+          </mat-form-field>
+        </div>
+        <div class="sw-flex-row">
+          <mat-form-field class="ob-span-6">
+            <mat-label
+              >{{ "app.site.onboarding.trust.organisation-information.correspondence-language" | translate }}
+            </mat-label>
+            <mat-select [formControl]="form.controls.correspondingLanguage" data-cy="contactLanguageSelect">
+              @for (lang of languages; track lang) {
+                <mat-option [value]="lang">
+                  {{ lang | uppercase }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="terms-container">
+      <div>
+        <mat-checkbox [formControl]="form.controls.readTermsAndConditions" data-cy="termsAndConditions"
+          >{{ "app.site.onboarding.trust.organisation-information.read-terms-and-conditions" | translate }}
+        </mat-checkbox>
+        @if (
+          form.controls.readTermsAndConditions.hasError("required") && form.controls.readTermsAndConditions.touched
+        ) {
+          <mat-error>{{ "eportal_onboardingTR_addDetails_error_termsAndConditions" | translate }}</mat-error>
+        }
+      </div>
+      <div>
+        <mat-checkbox [formControl]="form.controls.readPrivacyPolicy" data-cy="dataProtection"
+          >{{ "app.site.onboarding.trust.organisation-information.read-privacy-policy" | translate }}
+        </mat-checkbox>
+        @if (form.controls.readPrivacyPolicy.hasError("required") && form.controls.readPrivacyPolicy.touched) {
+          <mat-error>{{ "eportal_onboardingTR_addDetails_error_privacyPolicy" | translate }}</mat-error>
+        }
+      </div>
+    </div>
+  </div>
+</form>
+<div class="actions">
+  <div class="actions-2">
+    <button
+      (click)="wizardService.saveAndNext()"
+      data-cy="btnOrganizationInfoNext"
+      mat-button
+      obButton="primary"
+      type="button"
+    >
+      {{ "app.site.onboarding.trust.organisation-information.cta" | translate }}
+    </button>
+    <button
+      (click)="wizardService.onSaveAndContinueLater()"
+      data-cy="btnOrganizationInfoLeave"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_continueLater" | translate }}
+    </button>
+  </div>
+</div>

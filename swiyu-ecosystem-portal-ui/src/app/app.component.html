@@ -1,0 +1,17 @@
+@if (isLoggedIn) {
+  <ob-master-layout>
+    <div style="display: flex; flex-direction: row; column-gap: 20px" obHeaderTitle>
+      <div [innerHTML]="'app.name' | translate"></div>
+      @if (productLabel) {
+        <mat-chip style="background-color: #1e5a55" class="info">
+          {{ productLabel }}
+        </mat-chip>
+      }
+    </div>
+    <ng-container obFooterInfo>
+      <p>
+        &copy; 2025 <span>{{ "i18n.oblique.footer.title" | translate }}</span>
+      </p>
+    </ng-container>
+  </ob-master-layout>
+}

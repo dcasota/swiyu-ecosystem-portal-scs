@@ -1,0 +1,453 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Business Identifier API",
+    "description": "IF-010 - Identifier operations for business partner.",
+    "version": "1.12.4-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8200",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearer-jwt": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Identifier B2B",
+      "description": "Identifier B2B API"
+    }
+  ],
+  "paths": {
+    "/api/v1/identifier/business-entities/{businessEntityId}/identifier-entries/{identifierRegistryEntryId}": {
+      "put": {
+        "tags": [
+          "Identifier B2B"
+        ],
+        "summary": "IF-010.003 - Update the entry on the identifier registry to store an updated did:tdw.",
+        "operationId": "updateIdentifierEntry",
+        "parameters": [
+          {
+            "name": "businessEntityId",
+            "in": "path",
+            "description": "The business partner id provided by the self service api.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "8432e1f3-8119-4fb9-a879-190ab2cb9deb"
+          },
+          {
+            "name": "identifierRegistryEntryId",
+            "in": "path",
+            "description": "The identifier registry entry ID provided by /api/v1/identifier-entries/",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "18fa7c77-9dd1-4e20-a147-fb1bec146085"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/jsonl+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/identifier/business-entities/{businessEntityId}/identifier-entries/": {
+      "post": {
+        "tags": [
+          "Identifier B2B"
+        ],
+        "summary": "IF-010.002 - Create a new entry on the identifier registry to store a did:tdw including key material.",
+        "operationId": "createIdentifierEntry",
+        "parameters": [
+          {
+            "name": "businessEntityId",
+            "in": "path",
+            "description": "The business partner id provided by the self service api.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "8432e1f3-8119-4fb9-a879-190ab2cb9deb"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdentifierEntryCreation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/identifier/business-entities/{businessEntityId}/identifier/": {
+      "get": {
+        "tags": [
+          "Identifier B2B"
+        ],
+        "summary": "IF-010.001 - Get all entries for the identifier registry.",
+        "operationId": "getAllIdentifierEntries",
+        "parameters": [
+          {
+            "name": "businessEntityId",
+            "in": "path",
+            "description": "The business partner id provided by the self service api.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "8432e1f3-8119-4fb9-a879-190ab2cb9deb"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageIdentifierEntry"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string",
+            "description": "| Value              | Description                                                                           |\n| ------------------ | ------------------------------------------------------------------------------------- |\n| data_invalid       | Indicates that the given data was invalid in syntax of semantic.                      |\n| resource_not_found | Indicates that the requested data was not found in the given context.                 |\n| resource_forbidden | Indicates that the requested data in not available with the permissions used.         |\n| action_forbidden   | Indicates that the requested action could not be processed with the permissions used. |\n",
+            "enum": [
+              "data_invalid",
+              "resource_not_found",
+              "resource_forbidden",
+              "action_forbidden"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "additionalDetails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "IdentifierEntryCreation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "18fa7c77-9dd1-4e20-a147-fb1bec146085"
+          },
+          "identifierRegistryUrl": {
+            "type": "string",
+            "example": "https://identifier-registry.admin.ch/api/v1/did/18fa7c77-9dd1-4e20-a147-fb1bec146085/did.jsonl"
+          }
+        }
+      },
+      "IdentifierEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "18fa7c77-9dd1-4e20-a147-fb1bec146085"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-29T09:35:16.809924Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-10-29T09:35:16.809924Z"
+          },
+          "did": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "updatedAt"
+        ]
+      },
+      "PageIdentifierEntry": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentifierEntry"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "paged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "sorted": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "prometheus": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "OIDC": {
+        "type": "openIdConnect",
+        "description": "OAuth2-Authentication",
+        "openIdConnectUrl": "https://swiyu-oauth-mock-server-d.apps.p-szb-ros-shrd-npr-01.cloud.admin.ch/.well-known/openid-configuration"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "in": "header",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

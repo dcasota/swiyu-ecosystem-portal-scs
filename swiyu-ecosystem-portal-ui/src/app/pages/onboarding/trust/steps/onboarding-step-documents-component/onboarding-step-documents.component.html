@@ -1,0 +1,98 @@
+<form id="documents-form" [formGroup]="form" obUnsavedChanges>
+  <div class="sw-form-container">
+    <div class="sw-form-sub-container">
+      <h1>{{ "eportal_onboardingTR_formalProof_pageTitle" | translate }}</h1>
+      <p>
+        {{ "eportal_onboardingTR_formalProof_introText" | translate }}
+      </p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p [innerHTML]="'eportal_onboardingTR_formalProof_introText_warning_autoApproval' | translate"></p>
+      }
+    </div>
+    <div class="sw-form-sub-container">
+      <div>
+        <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_declarationOfIntent" | translate }}</h3>
+        <div>
+          {{ "eportal_onboardingTR_formalProof_sectionText_declarationOfIntent" | translate }}
+        </div>
+      </div>
+      <div>
+        <a
+          mat-button
+          download
+          obButton="primary"
+          [attr.href]="'assets/pdf/declaration_of_intent_demo.pdf'"
+          type="button"
+          data-cy="linkDownloadDeclarationOfIntent"
+        >
+          <mat-icon svgIcon="download" />
+          {{ "eportal_onboardingTR_formalProof_btnPrim_download" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="sw-form-sub-container">
+      <h3>{{ "eportal_onboardingTR_formalProof_sectionTitle_electronicSignature" | translate }}</h3>
+      <p>
+        {{ "eportal_onboardingTR_formalProof_sectionText_electronicSignature" | translate }}
+      </p>
+      @if (appConfigService.isFunctionalityAutomaticApprovalEnabled) {
+        <p
+          [innerHTML]="
+            'eportal_onboardingTR_formalProof_sectionText_electronicSignature_warning_autoApproval' | translate
+          "
+        ></p>
+      }
+      <div class="sw-upload-container">
+        @if (form.controls.uploadedFiles.value?.length === 0) {
+          <ob-file-upload
+            [accept]="['.pdf']"
+            [maxFileSize]="10"
+            [singleRequest]="false"
+            [multiple]="false"
+            [uploadUrl]="
+              '/api/v1/trust-onboarding-submission/' + wizardService.submissionId + '/documents/declaration-of-intent'
+            "
+            (uploadEvent)="uploadEvent($event)"
+          />
+        } @else {
+          <div class="sw-file-info">
+            <div>{{ "eportal_global_uploadArea_title" | translate }}</div>
+            @for (file of form.controls.uploadedFiles.value; track file) {
+              <div class="sw-file-details">
+                <div class="sw-font-size-lg">
+                  <mat-icon svgIcon="file_pdf" />
+                </div>
+                <span>{{ file }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</form>
+<div class="actions">
+  <button
+    (click)="wizardService.navigateToPreviousStep()"
+    data-cy="btnDocumentPrevious"
+    mat-button
+    obButton="secondary"
+    type="button"
+  >
+    {{ "eportal_global_btnSec_back" | translate }}
+  </button>
+  <div class="actions-2">
+    <button (click)="wizardService.saveAndNext()" data-cy="btnNext" mat-button obButton="primary" type="button">
+      {{ "eportal_global_btnPrim_continueToTechnicalProof" | translate }}
+    </button>
+    <button
+      (click)="wizardService.onSaveAndContinueLater()"
+      data-cy="btnDocumentLeave"
+      mat-button
+      obButton="secondary"
+      type="button"
+    >
+      {{ "eportal_global_btnSec_continueLater" | translate }}
+    </button>
+  </div>
+</div>

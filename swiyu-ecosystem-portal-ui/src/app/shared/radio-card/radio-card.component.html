@@ -1,0 +1,23 @@
+<mat-card
+  (keydown)="onKeyBoardInteraction($event)"
+  (click)="!disabled() && this.cardSelect.emit()"
+  obSelectable
+  [value]="value()"
+  [attr.aria-checked]="checked()"
+  [selected]="checked()"
+  [class.error-card]="hasError()"
+  [class.disabled-card]="disabled()"
+  class="radio-card"
+  [attr.data-cy]="dataCy()"
+>
+  <mat-card-content>
+    <div class="card-content">
+      <ng-content select="[cardIcon]"> </ng-content>
+      <div class="text-container">
+        <h6>
+          <ng-content></ng-content>
+        </h6>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

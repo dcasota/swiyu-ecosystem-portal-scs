@@ -1,0 +1,136 @@
+<div class="sw-wizard-lvl-1">
+  <div class="sw-wizard-lvl-2">
+    <h1>{{ "eportal_onboardingTR_technicalProof_pageTitle" | translate }}</h1>
+    <div>
+      {{ "eportal_onboardingTR_technicalProof_infoText" | translate }}
+    </div>
+  </div>
+  <div class="sw-wizard-lvl-2">
+    <h3>{{ "eportal_onboardingTR_technicalProof_sectionTitle_proofOfOwnership" | translate }}</h3>
+    <div class="pop-summary">
+      <div class="group">
+        <div class="cell" data-cy="didToVerify" [class.error-text]="showError()">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_open" | translate }}</div>
+          <div class="body">{{ wizardService.submission()?.proofOfPossessionList?.length }} DID(s)</div>
+        </div>
+        <div class="cell" data-cy="didVerified" [class.error-text]="showError()">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_done" | translate }}</div>
+          <div class="body">{{ numberOfSuccessfulVerifications() }} DID(s)</div>
+        </div>
+        <div class="cell" data-cy="remainingTime">
+          <div class="caption">{{ "eportal_onboardingTR_technicalProof_label_time" | translate }}</div>
+          <div class="body">{{ daysRemainingForVerification() }} {{ "eportal_global_days" | translate }}</div>
+        </div>
+      </div>
+      @if (numberOfMissingVerifications() > 0) {
+        <mat-chip [class.proof-warning-chip]="!showError()" [class.proof-error-chip]="showError()">
+          <div class="content">
+            <mat-icon [svgIcon]="'exclamation_circle'" />
+            <span class="caption"
+              >{{ numberOfMissingVerifications() }}
+              {{ "eportal_onboardingTR_technicalProof_status_moreThanOne" | translate }}</span
+            >
+          </div>
+        </mat-chip>
+      } @else {
+        <mat-chip class="proof-success-chip">
+          <div class="content">
+            <mat-icon [svgIcon]="'checkmark_circle'" />
+            <span class="caption"> {{ "eportal_onboardingTR_technicalProof_status_allReceived" | translate }}</span>
+          </div>
+        </mat-chip>
+      }
+    </div>
+    @if (showError()) {
+      <div class="sw-form-error">
+        <mat-icon [svgIcon]="'exclamation_circle'" color="warn" />
+        <span class="caption">{{ "eportal_onboarding_error_technicalProof" | translate }}</span>
+      </div>
+    }
+    <mat-radio-group [(ngModel)]="selectedProofProcessType">
+      <mat-radio-button value="technical_proof_dev" data-cy="technicalProofDev"
+        >{{ "eportal_onboardingTR_technicalProof_card_dev" | translate }}
+      </mat-radio-button>
+      <mat-radio-button value="technical_proof_self" data-cy="technicalProofSelf"
+        >{{ "eportal_onboardingTR_technicalProof_card_self" | translate }}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  @if (selectedProofProcessType()) {
+    <div class="explainer-container">
+      <div class="title-container">
+        <h3>{{ "app.site.onboarding.trust.introduction.explainer-title" | translate }}</h3>
+        @if (selectedProofProcessType() === ProofProcessType.self) {
+          <a mat-button obButton="secondary" type="button">
+            <mat-icon [svgIcon]="'link_external'" />
+            {{ "eportal_onboardingTR_technicalProof_submitProof_cardTitle" | translate }}
+          </a>
+        } @else {
+          <a mat-button obButton="secondary" type="button">
+            <mat-icon [svgIcon]="'mail'" />
+            {{ "eportal_onboarding_development_btnSec_emailTemplate" | translate }}
+          </a>
+        }
+      </div>
+      <div class="steps-container">
+        @for (step of activeSteps; track step; let i = $index) {
+          <div class="steps-card">
+            <div class="header">
+              <div class="step">{{ i + 1 }}</div>
+              <h5 class="title">{{ step.title | translate }}</h5>
+            </div>
+            @if (step.hint) {
+              <ob-alert type="warning">{{ step.hint | translate }}</ob-alert>
+            }
+            <div>
+              {{ step.step | translate }}
+            </div>
+            @if (step.links && step.links.length > 0) {
+              <!--suppress AngularForBlockNonIterableVar -->
+              <div class="bottom-links">
+                @for (link of step.links; track link) {
+                  <a class="link" href="{{ link.url }}" target="_blank">
+                    <div class="text">{{ link.title | translate }}</div>
+                    <mat-icon [svgIcon]="'link_external'" />
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+      @if (selectedProofProcessType() === ProofProcessType.dev) {
+        <div class="sw-flex-row">
+          <div>
+            <div class="caption">
+              {{ "eportal_onboarding_development_APIproofOfPossession_label" | translate }}
+            </div>
+            <div>{{ appConfig.trustApiUrl }}</div>
+          </div>
+          <button mat-icon-button obButton="secondary" type="button" (click)="copyPOPUrl()">
+            <mat-icon [svgIcon]="'copy'" />
+          </button>
+        </div>
+      }
+    </div>
+  }
+  <div class="actions">
+    <button (click)="wizardService.navigateToPreviousStep()" mat-button obButton="secondary" type="button">
+      {{ "eportal_global_btnSec_back" | translate }}
+    </button>
+    <div class="actions-2">
+      <button
+        (click)="wizardService.submit()"
+        data-cy="btnTechnicalVerificationNext"
+        mat-button
+        obButton="primary"
+        type="button"
+      >
+        {{ "app.site.onboarding.trust.technical-verification.cta" | translate }}
+      </button>
+      <button (click)="wizardService.onSaveAndContinueLater()" mat-button obButton="secondary" type="button">
+        {{ "eportal_global_btnSec_continueLater" | translate }}
+      </button>
+    </div>
+  </div>
+</div>

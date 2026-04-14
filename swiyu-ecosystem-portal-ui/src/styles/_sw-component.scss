@@ -1,0 +1,23 @@
+@use "./_sw-variables.scss" as *;
+@use "@oblique/oblique/styles/scss/core/variables" as *;
+
+.sw-radio-card-container {
+  display: flex;
+  align-items: stretch;
+  gap: $sw-spc-xs;
+  align-self: stretch;
+}
+
+mat-card.radio-card mat-icon {
+  border: 0.9px solid $ob-default;
+  border-radius: 50%;
+  padding: 12px;
+  font-size: 48px;
+
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

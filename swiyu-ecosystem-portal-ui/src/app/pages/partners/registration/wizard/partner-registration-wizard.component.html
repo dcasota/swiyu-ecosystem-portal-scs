@@ -1,0 +1,20 @@
+<div class="sw-wizard">
+  <mat-horizontal-stepper #stepper [linear]="false" class="sw-stepper">
+    <ng-template matStepperIcon="edit">
+      <mat-icon [svgIcon]="'pencil'" />
+    </ng-template>
+
+    <ng-template matStepperIcon="done">
+      <mat-icon [svgIcon]="'checkmark'" />
+    </ng-template>
+    <mat-step [editable]="service.areStepsEditable()" [label]="'eportal_onboarding_stepper_product' | translate" />
+    <mat-step [editable]="service.areStepsEditable()" [label]="'eportal_onboarding_stepper_profile' | translate" />
+    @if (service.isPaymentEnabled) {
+      <mat-step [editable]="service.areStepsEditable()" [label]="'eportal_onboarding_stepper_payment' | translate" />
+    }
+    <mat-step [label]="'eportal_onboarding_stepper_development' | translate" />
+  </mat-horizontal-stepper>
+  <div class="step-content-container">
+    <router-outlet (activate)="onStepActivated($event)" />
+  </div>
+</div>
