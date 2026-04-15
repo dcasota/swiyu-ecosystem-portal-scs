@@ -1,5 +1,20 @@
 # SWIYU Ecosystem Portal
 
+![github-banner](https://github.com/swiyu-admin-ch/swiyu-admin-ch.github.io/blob/main/assets/images/github-banner.jpg)
+
+
+<br>
+<br>
+
+** Please note: This information currently applies to internal government users and will be updated as soon as possible**
+<br>
+<br>
+
+
+
+
+
+
 ## Getting Started
 
 To start the application locally run the following command:
