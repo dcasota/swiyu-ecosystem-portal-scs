@@ -36,7 +36,7 @@ export class AuthService {
         }
 
         const sessionUrl = this.takePostLoginReturnUrl();
-        if (sessionUrl) {
+        if (sessionUrl && this.isSafeReturnUrl(sessionUrl)) {
           void this.router.navigateByUrl(sessionUrl);
         }
       });
@@ -79,6 +79,22 @@ export class AuthService {
       sessionStorage.removeItem(POST_LOGIN_RETURN_SESSION_KEY);
     }
     return url;
+  }
+
+  /**
+   * Guards against open redirects (CWE-601). Only same-origin, absolute-path URLs are allowed as
+   * post-login return targets. Protocol-relative ("//host"), backslash tricks and any URL carrying
+   * a scheme or host are rejected so a stored value can never navigate the user off-origin.
+   */
+  private isSafeReturnUrl(url: string): boolean {
+    if (!url.startsWith('/') || url.startsWith('//') || url.startsWith('/\\')) {
+      return false;
+    }
+    try {
+      return new URL(url, window.location.origin).origin === window.location.origin;
+    } catch {
+      return false;
+    }
   }
 
   private setupAutomaticSilentRefreshIfConfigured(tokenRefreshEnabled: boolean): void {
